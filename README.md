@@ -46,10 +46,10 @@ target_link_libraries(seu_programa
 #include "pico/stdlib.h"
 #include "PortaSerial.h"
 
-static uart_inst_t * const INTERFACE_UART = uart1;
-constexpr uint32_t TAXA_BAUD_PADRAO = 115200U;
-constexpr uint GPIO_TX = 8U;
-constexpr uint GPIO_RX = 9U;
+#define INTERFACE_UART uart1;
+#define TAXA_BAUD_PADRAO 115200U;
+#define GPIO_TX 8U;
+#define GPIO_RX 9U;
 
 int main() {
 
