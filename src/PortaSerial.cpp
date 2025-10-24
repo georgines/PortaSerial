@@ -4,18 +4,12 @@
 #include "hardware/uart.h"
 #include "pico/stdlib.h"
 
-static constexpr uint32_t ESPERA_CURTA_US = 10;
+static constexpr uint32_t ESPERA_CURTA_US = 10U;
 static constexpr uint32_t AGUARDO_CARACTERE_TEXTO_US = 1000U;
 static constexpr uint32_t TEMPO_MAXIMO_SEM_DADOS_US = 20000U;
 
-PortaSerial::PortaSerial(uart_inst_t* uart_escolhida,
-                         uint32_t taxa_baud,
-                         uint pino_tx,
-                         uint pino_rx)
-    : uartEscolhida(uart_escolhida),
-      taxaBaud(taxa_baud),
-      pinoTx(pino_tx),
-      pinoRx(pino_rx) {
+PortaSerial::PortaSerial(uart_inst_t *uart_escolhida, uint32_t taxa_baud, uint pino_tx, uint pino_rx)
+    : uartEscolhida(uart_escolhida), taxaBaud(taxa_baud), pinoTx(pino_tx), pinoRx(pino_rx) {
 }
 
 bool PortaSerial::iniciar() {
@@ -23,7 +17,7 @@ bool PortaSerial::iniciar() {
         return false;
     }
 
-    stdio_uart_deinit();    
+    stdio_uart_deinit();
     stdio_uart_init_full(uartEscolhida, taxaBaud, pinoTx, pinoRx);
     if (taxaBaud == 0U) {
         return false;
@@ -46,12 +40,12 @@ bool PortaSerial::enviarCaractere(char caractere) {
     return true;
 }
 
-bool PortaSerial::enviarTexto(const char* texto) {
+bool PortaSerial::enviarTexto(const char *texto) {
     if (texto == nullptr) {
         return false;
     }
 
-    const char* ponteiro_atual = texto;
+    const char *ponteiro_atual = texto;
 
     while (*ponteiro_atual != '\0') {
         bool envio_ok = enviarCaractere(*ponteiro_atual);
@@ -66,7 +60,7 @@ bool PortaSerial::enviarTexto(const char* texto) {
     return true;
 }
 
-bool PortaSerial::enviarTextoComNovaLinha(const char* texto) {
+bool PortaSerial::enviarTextoComNovaLinha(const char *texto) {
     if (!enviarTexto(texto)) {
         return false;
     }
@@ -74,7 +68,7 @@ bool PortaSerial::enviarTextoComNovaLinha(const char* texto) {
     return enviarTexto(FIM_LINHA);
 }
 
-bool PortaSerial::lerCaractere(char& caractere) {
+bool PortaSerial::lerCaractere(char &caractere) {
     if (!haDadosDisponiveis()) {
         return false;
     }
@@ -84,7 +78,7 @@ bool PortaSerial::lerCaractere(char& caractere) {
     return true;
 }
 
-size_t PortaSerial::lerTexto(char* destino, size_t tamanho_maximo, char delimitador) {
+size_t PortaSerial::lerTexto(char *destino, size_t tamanho_maximo, char delimitador) {
     if (destino == nullptr) {
         return 0U;
     }
@@ -101,8 +95,7 @@ size_t PortaSerial::lerTexto(char* destino, size_t tamanho_maximo, char delimita
     uint32_t tempo_sem_dados_us = 0U;
 
     while (indice_atual < (tamanho_maximo - 1U)) {
-        bool dados_disponiveis = uart_is_readable_within_us(uartEscolhida,
-                                                            AGUARDO_CARACTERE_TEXTO_US);
+    bool dados_disponiveis = uart_is_readable_within_us(uartEscolhida, AGUARDO_CARACTERE_TEXTO_US);
 
         if (!dados_disponiveis) {
             tempo_sem_dados_us += AGUARDO_CARACTERE_TEXTO_US;
